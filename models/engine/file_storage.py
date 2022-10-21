@@ -80,3 +80,13 @@ class FileStorage:
         # return item
         print(type(item))
         return item[0].id 
+
+    def count(self, *args):
+        if not args:
+            return len(self.all())
+        cls = ''
+        try:
+            cls = args[0].__name__
+            return len(self.all(cls))
+        except AttributeError:
+            print('{} is not supported'.format(type(args[0]).__name__))
