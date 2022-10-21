@@ -88,3 +88,18 @@ class DBStorage:
                 return accept
             except:
                 pass
+
+    def count(self, *args):
+        if args and len(args) == 1:
+            cls = args[0]
+
+            try:
+                key = '{}'.format(cls.__name__)
+                accept = classes.get(key, None)
+                all = self.all(accept)
+                return len(all)
+            except Exception:
+                error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
+                print(error)
+        else:
+            return len(self.all())
