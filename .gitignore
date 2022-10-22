@@ -5,3 +5,4 @@ test_get_count.py
 7-dump.sql
 main_place_amenities.py
 __pycache__/
+api/v1/views/__pycache__/index.cpython-38.pyc
