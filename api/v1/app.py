@@ -4,7 +4,9 @@
 Web service entry point
 '''
 
+from api.v1.views import app_views
 from flask import Flask, jsonify
+from models import storage
 from os import getenv
 
 # Environment variables
@@ -13,15 +15,23 @@ HBNB_API_PORT = getenv('HBNB_API_PORT')
 
 #: flask: app stores instance of Flask
 app = Flask(__name__)
-
-@app.route('/api/v1/status', strict_slashes=False, methods=['GET'])
-def api_status():
-    return jsonify({'status': 'OK'})
+# Register application blueprint
+app.register_blueprint(app_views)
 
 
+#@app.route('/api/v1/status', strict_slashes=False, methods=['GET'])
+#def api_status():
+#    return jsonify({'status': 'OK'})
+
+
+@app.teardown_appcontext
+def close_session(exception):
+    '''
+    Terminate database session and transaction as soon as the
+    http lifecycle ends.
+    '''
+    storage.close()
 if __name__ == '__main__':
-    app.run(
-        host=HBNB_API_HOST,
-        port=HBNB_API_PORT,
-        debug=True
-    )
+    host = HBNB_API_HOST or '0.0.0.0'
+    port = HBNB_API_PORT or '5000'
+    app.run(host=host, port=port, threaded=True)
