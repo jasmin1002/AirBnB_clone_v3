@@ -7,7 +7,7 @@ uses default port 5000 and 0.0.0.0 host value
 '''
 
 from api.v1.views import app_views
-from flask import Flask, jsonify, make_response
+from flask import Flask, json
 from models import storage
 from os import getenv
 
@@ -27,7 +27,8 @@ def not_found(error):
     '''
     Page not found error page handler
     '''
-    return make_response(jsonify({'error': 'Not Found'}), 404)
+    response = json.dumps({'error': 'Not found'}, indent=2)
+    return response, 404
 
 
 @app.teardown_appcontext
