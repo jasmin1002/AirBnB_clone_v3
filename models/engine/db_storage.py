@@ -74,3 +74,32 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, *args):
+        if args and len(args) == 2:
+            cls = args[0]
+            id = args[1]
+
+            try:
+                key = '{}'.format(cls.__name__)
+                accept = classes.get(key, None)
+                if accept:
+                    return self.__session.get(accept, id)
+                return accept
+            except:
+                pass
+
+    def count(self, *args):
+        if args and len(args) == 1:
+            cls = args[0]
+
+            try:
+                key = '{}'.format(cls.__name__)
+                accept = classes.get(key, None)
+                all = self.all(accept)
+                return len(all)
+            except Exception:
+                error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
+                print(error)
+        else:
+            return len(self.all())
