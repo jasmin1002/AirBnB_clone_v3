@@ -5,7 +5,7 @@ blueprint when it extends flask application.
 '''
 
 from api.v1.views import app_views
-from flask import jsonify
+from flask import jsonify, json
 from models import storage
 from models.amenity import Amenity
 from models.city import City
@@ -29,7 +29,7 @@ tables = {
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
 def api_status():
     '''Bind function view to endpoint /status'''
-    return jsonify({'status': 'OK'})
+    return json.dumps({'status': 'OK'}, indent=2)
 
 
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
@@ -42,4 +42,4 @@ def resource_stats():
 
     for (key, value) in tables.items():
         stats[key] = storage.count(value)
-    return jsonify(stats)
+    return json.dumps(stats, indent=2)
