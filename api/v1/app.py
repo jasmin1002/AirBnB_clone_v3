@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 '''
-Web service entry point
+Web service entry point. Configure application
+to run given hostname and port. Otherwise, it
+uses default port 5000 and 0.0.0.0 host value
 '''
 
 from api.v1.views import app_views
