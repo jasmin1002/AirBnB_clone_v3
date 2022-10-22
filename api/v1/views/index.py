@@ -15,7 +15,7 @@ from models.user import User
 from models.place import Place
 
 #: Airbnb model tables
-models = {
+tables = {
             'amenity': Amenity,
             'city': City,
             'review': Review,
@@ -26,13 +26,13 @@ models = {
 
 
 # Bind function view to route /status
-@app_views.route('/status', strict_slashes=False)
+@app_views.route('/status', methods=['GET'], strict_slashes=False)
 def api_status():
     '''Bind function view to endpoint /status'''
     return jsonify({'status': 'OK'})
 
 
-@app_views.route('/stats', strict_slashes=False)
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def resource_stats():
     '''
     Bind function view to endpoint /stats and
@@ -40,6 +40,6 @@ def resource_stats():
     '''
     stats = {}
 
-    for (key, value) in models.items():
+    for (key, value) in tables.items():
         stats[key] = storage.count(value)
     return jsonify(stats)
