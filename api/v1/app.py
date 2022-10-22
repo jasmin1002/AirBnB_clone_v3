@@ -7,7 +7,7 @@ uses default port 5000 and 0.0.0.0 host value
 '''
 
 from api.v1.views import app_views
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from models import storage
 from os import getenv
 
@@ -19,6 +19,15 @@ HBNB_API_PORT = getenv('HBNB_API_PORT')
 app = Flask(__name__)
 # Register application blueprint
 app.register_blueprint(app_views)
+
+
+# 404 errorhandler view
+@app.errorhandler(404)
+def not_found(error):
+    '''
+    Page not found error page handler
+    '''
+    return make_response(jsonify({'error': 'Not Found'}), 404)
 
 
 @app.teardown_appcontext
