@@ -68,3 +68,30 @@ class FileStorage:
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
         self.reload()
+
+    def get(self, *args):
+        if len(args) == 2:
+            cls = args[0]
+            id = args[1]
+
+            try:
+                key = '{}'.format(cls.__name__)
+                accept = classes.get(key, None)
+                item = [data for data in self.all(accept).values()\
+                    if data.id == id]
+                if item:
+                    return item[0]
+                else:
+                    return None
+            except:
+                print('{} is not supported'.format(type(cls).__name__))
+
+    def count(self, *args):
+        if not args:
+            return len(self.all())
+        cls = ''
+        try:
+            cls = args[0].__name__
+            return len(self.all(cls))
+        except AttributeError:
+            print('{} is not supported'.format(type(args[0]).__name__))
