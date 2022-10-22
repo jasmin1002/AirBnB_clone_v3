@@ -19,11 +19,6 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 
 
-#@app.route('/api/v1/status', strict_slashes=False, methods=['GET'])
-#def api_status():
-#    return jsonify({'status': 'OK'})
-
-
 @app.teardown_appcontext
 def close_session(exception):
     '''
@@ -31,6 +26,8 @@ def close_session(exception):
     http lifecycle ends.
     '''
     storage.close()
+
+
 if __name__ == '__main__':
     host = HBNB_API_HOST or '0.0.0.0'
     port = HBNB_API_PORT or '5000'
