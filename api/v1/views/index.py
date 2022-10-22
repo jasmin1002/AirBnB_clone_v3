@@ -16,12 +16,12 @@ from models.place import Place
 
 #: Airbnb model tables
 tables = {
-            'amenity': Amenity,
-            'city': City,
-            'review': Review,
-            'state': State,
-            'user': User,
-            'place': Place
+            'amenities': Amenity,
+            'cities': City,
+            'reviews': Review,
+            'states': State,
+            'users': User,
+            'places': Place
         }
 
 
