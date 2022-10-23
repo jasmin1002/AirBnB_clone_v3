@@ -26,17 +26,16 @@ def fetch_states():
 
 
 # Bind function view to route /api/v1/states/<state_id>
-'''@app_views.route('/states/<state_id>', methods=['GET'],
-strict_slashes=False)
-def fetch_state_id(state_id):'''
-'''
-Fetch a state by identification key, state_id
-Args:
-state_id (str): A required state id key
-Return:
-return json state obj for success, 404 error (json) for fail
-'''
-'''state = storage.get(State, state_id)
-if not state:
-return abort(404)
-return json.dumps(state.to_dict(), indent=2)'''
+@app_views.route('/states/<string:state_id>', methods=['GET'], strict_slashes=False)
+def fetch_state_id(state_id):
+    '''
+    Fetch a state by identification key, state_id
+    Args:
+        state_id (str): A required state id key
+    Return:
+        return json state obj for success, 404 error (json) for fail
+    '''
+    state = storage.get(State, state_id)
+    if not state:
+        return abort(404)
+    return json.dumps(state.to_dict(), indent=2)
