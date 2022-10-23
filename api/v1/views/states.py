@@ -30,5 +30,5 @@ def fetch_states(state_id=None):
     else:
         state = storage.get(State, state_id)
         if not state:
-            return abort(404)
+            abort(404)
         return json.dumps(state.to_dict(), indent=2)
