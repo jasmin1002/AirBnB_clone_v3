@@ -45,4 +45,7 @@ def resource_stats():
 
     for (key, value) in tables.items():
         stats[key] = storage.count(value)
-    return json.dumps(stats, indent=2)
+    response = json.dumps(stats, indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    return response
