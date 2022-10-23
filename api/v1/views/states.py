@@ -41,7 +41,11 @@ def fetch_state(state_id):
 
 
 # Bind function view to route /api/v1/<state_id> by using DELETE method
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route(
+    '/states/<state_id>',
+    methods=['DELETE'],
+    strict_slashes=False
+)
 def delete_state(state_id):
     '''
     Delete a state resource whose state_id is specified
@@ -62,7 +66,19 @@ def delete_state(state_id):
 # Bind function view to route /api/v1/<state_id> by using POST method
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def post_state():
+    '''
+    Add an entry to states table provided it's application/json
+    formatted.
+    Args:
+        No required argument parameter
+    Returns:
+        Return 201 code for success, 400 for fail
+    '''
+    #: parsed post data
     data = request.get_json()
+
+    # Check if the data format is acceptable
+    # and has required attribute(s)
     if not data:
         abort(400, description='Not a JSON')
     elif 'name' not in data:
@@ -70,3 +86,25 @@ def post_state():
     state = State(**data)
     state.save()
     return json.dumps(state.to_dict(), indent=2), 201
+
+
+# Bind function view to route /api/v1/<state_id> by using PUT method
+@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
+def update_state(state_id):
+    state = storage.get(State, state_id)
+    if not state:
+        abort(404)
+    data = request.get_json()
+
+    if not data:
+        abort(400, description='Not a JSON')
+    elif 'name' not in data:
+        abort(400, description='Missing name')
+
+    avoid = ['id', 'created_at', 'updated_at']
+    for (key, value) in data.items():
+        if key not in avoid:
+            setattr(state, key, value)
+
+    state.save()
+    return json.dumps(state.to_dict(), indent=2), 200
