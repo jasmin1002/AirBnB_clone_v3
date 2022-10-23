@@ -12,40 +12,33 @@ from models.state import State
 
 # Bind function view to route /api/v1/states
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
-@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
-def fetch_states(state_id=None):
+def fetch_states():
     '''
-    Fetch and return either all state entries/resources
-    or a state with specified state's id
+    Fetch and return all state entries/resources
+
     Args:
-        state_id (optional str value): Accept state's id or None default
+        No required arguments
     Returns:
-        Return either list of all states obj or an entry in json for
-        success, 404 error response for fail.
+        Return list of all states obj in json for successfail.
     '''
-    if not state_id:
-        collection = storage.all(State)
-        states = [state.to_dict() for state in collection.values()]
-        return json.dumps(states, indent=2)
-    else:
-        state = storage.get(State, state_id)
-        if not state:
-            abort(404)
-        else:
-            return json.dumps(state.to_dict(), indent=2)
+    collection = storage.all(State)
+    states = [state.to_dict() for state in collection.values()]
+    return json.dumps(states, indent=2)
 
 
-'''@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
+# Bind function view to route /api/v1/<state_id>
+@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def fetch_state(state_id):
-
+    '''
     Fetch and return a state resource whose state_id is specified
     Args:
         state_id (str value key): Accept state's id
-    Returns{
+    Returns:
         return state obj for success, error in json for fail
+    '''
     
     state = storage.get(State, state_id)
     if not state:
         abort(404)
     else:
-        return json.dumps(state.to_dict(), indent=2)'''
+        return json.dumps(state.to_dict(), indent=2)
