@@ -12,7 +12,6 @@ from models.state import State
 
 # Bind function view to route /api/v1/states by using GET method
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
-# @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def fetch_states():
     '''
     Fetch and return all state entries/resources
@@ -22,17 +21,12 @@ def fetch_states():
     Returns:
         Return list of all states obj in json for successfail.
     '''
-    '''if not state_id:'''
     collection = storage.all(State)
     states = [state.to_dict() for state in collection.values()]
     response = json.dumps(states, indent=2)
     response = make_response(response)
     response.mimetype = 'application/json'
     return response
-    '''state = storage.get(State, state_id)
-    if not state:
-        abort(404)
-    return json.dumps(state.to_dict(), indent=2)'''
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
@@ -87,12 +81,16 @@ def post_state():
     #: parsed post data
     data = request.get_json()
 
-    # Check if the data format is acceptable
-    # and has required attribute(s)
-    if not data:
-        abort(400, description='Not a JSON')
-    elif 'name' not in data:
-        abort(400, description='Missing name')
+    # Check if the data format is acceptable and has
+    # required attribute.
+    response = ''
+    if type(data).__name__ != 'dict':
+        return make_response({'error': 'Not a JSON'}, 400)
+    elif len(data) == 0 and type(data).__name__ == 'dict':
+        return make_response({'error': 'Missing name'}, 400)
+    elif type(data).__name__ == 'dict' and 'name' not in data:
+        return make_response({'error': 'Missing name'}, 400)
+
     state = State(**data)
     state.save()
     response = json.dumps(state.to_dict(), indent=2)
