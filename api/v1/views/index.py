@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 '''
-This script records operation later perform by
-blueprint when it extends flask application.
+This script records operation later perform by blueprint
+through entry route when it extends flask application.
 '''
 
 from api.v1.views import app_views
