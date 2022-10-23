@@ -5,7 +5,7 @@ through entry route when it extends flask application.
 '''
 
 from api.v1.views import app_views
-from flask import jsonify, json
+from flask import json, make_response
 from models import storage
 from models.amenity import Amenity
 from models.city import City
@@ -29,7 +29,10 @@ tables = {
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
 def api_status():
     '''Bind function view to endpoint /status'''
-    return json.dumps({'status': 'OK'}, indent=2)
+    response = json.dumps({'status': 'OK'}, indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    return response
 
 
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
