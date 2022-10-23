@@ -6,3 +6,4 @@ test_get_count.py
 main_place_amenities.py
 __pycache__/
 api/v1/views/__pycache__/index.cpython-38.pyc
+api/v1/views/__pycache__/__init__.cpython-38.pyc
