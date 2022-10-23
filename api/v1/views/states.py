@@ -5,7 +5,7 @@ to states route.
 '''
 
 from api.v1.views import app_views
-from flask import json, abort, request
+from flask import json, abort, request, make_response
 from models import storage
 from models.state import State
 
@@ -25,7 +25,10 @@ def fetch_states():
     '''if not state_id:'''
     collection = storage.all(State)
     states = [state.to_dict() for state in collection.values()]
-    return json.dumps(states, indent=2)
+    response = json.dumps(states, indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    return response
     '''state = storage.get(State, state_id)
     if not state:
         abort(404)
@@ -37,7 +40,10 @@ def fetch_state(state_id):
     state = storage.get(State, state_id)
     if not state:
         abort(404)
-    return json.dumps(state.to_dict(), indent=2)
+    response = json.dumps(state.to_dict(), indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    return response
 
 
 # Bind function view to route /api/v1/<state_id> by using DELETE method
@@ -60,7 +66,11 @@ def delete_state(state_id):
 
     state.delete()
     storage.save()
-    return json.dumps({}, indent=2), 200
+    response = json.dumps({}, indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    response.status_code = 200
+    return response
 
 
 # Bind function view to route /api/v1/<state_id> by using POST method
@@ -85,13 +95,29 @@ def post_state():
         abort(400, description='Missing name')
     state = State(**data)
     state.save()
-    return json.dumps(state.to_dict(), indent=2), 201
+    response = json.dumps(state.to_dict(), indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    response.status_code = 201
+    return response
 
 
 # Bind function view to route /api/v1/<state_id> by using PUT method
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
+    '''
+    Update State modify/edit pre-existing State
+    instance's attribute
+    Args:
+        state_id (str): Stores State instance id
+    Returns:
+        Return State obj with status code 200 on success
+    '''
+    #: State instance: Keeps reference to retrieved State instance
     state = storage.get(State, state_id)
+
+    # Check the post data for application/json format
+    # and if it has name attribute
     if not state:
         abort(404)
     data = request.get_json()
@@ -101,10 +127,14 @@ def update_state(state_id):
     elif 'name' not in data:
         abort(400, description='Missing name')
 
-    avoid = ['id', 'created_at', 'updated_at']
+    skips = ['id', 'created_at', 'updated_at']
     for (key, value) in data.items():
-        if key not in avoid:
+        if key not in skips:
             setattr(state, key, value)
 
     state.save()
-    return json.dumps(state.to_dict(), indent=2), 200
+    response = json.dumps(state.to_dict(), indent=2)
+    response = make_response(response)
+    response.mimetype = 'application/json'
+    response.status_code = 200
+    return response
