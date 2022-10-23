@@ -31,4 +31,21 @@ def fetch_states(state_id=None):
         state = storage.get(State, state_id)
         if not state:
             abort(404)
-        return json.dumps(state.to_dict(), indent=2)
+        else:
+            return json.dumps(state.to_dict(), indent=2)
+
+
+'''@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
+def fetch_state(state_id):
+
+    Fetch and return a state resource whose state_id is specified
+    Args:
+        state_id (str value key): Accept state's id
+    Returns{
+        return state obj for success, error in json for fail
+    
+    state = storage.get(State, state_id)
+    if not state:
+        abort(404)
+    else:
+        return json.dumps(state.to_dict(), indent=2)'''
