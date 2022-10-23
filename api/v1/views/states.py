@@ -5,13 +5,14 @@ to states route.
 '''
 
 from api.v1.views import app_views
-from flask import json, abort
+from flask import json, abort, request
 from models import storage
 from models.state import State
 
 
-# Bind function view to route /api/v1/states
+# Bind function view to route /api/v1/states by using GET method
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
+# @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def fetch_states():
     '''
     Fetch and return all state entries/resources
@@ -21,24 +22,51 @@ def fetch_states():
     Returns:
         Return list of all states obj in json for successfail.
     '''
+    '''if not state_id:'''
     collection = storage.all(State)
     states = [state.to_dict() for state in collection.values()]
     return json.dumps(states, indent=2)
+    '''state = storage.get(State, state_id)
+    if not state:
+        abort(404)
+    return json.dumps(state.to_dict(), indent=2)'''
 
 
-# Bind function view to route /api/v1/<state_id>
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def fetch_state(state_id):
-    '''
-    Fetch and return a state resource whose state_id is specified
-    Args:
-        state_id (str value key): Accept state's id
-    Returns:
-        return state obj for success, error in json for fail
-    '''
-    
     state = storage.get(State, state_id)
     if not state:
         abort(404)
-    else:
-        return json.dumps(state.to_dict(), indent=2)
+    return json.dumps(state.to_dict(), indent=2)
+
+
+# Bind function view to route /api/v1/<state_id> by using DELETE method
+@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+def delete_state(state_id):
+    '''
+    Delete a state resource whose state_id is specified
+    Args:
+        state_id (str value key): Accept state's id
+    Returns:
+        return empty dictionary for success, error in json for fail
+    '''
+    state = storage.get(State, state_id)
+    if not state:
+        abort(404)
+
+    state.delete()
+    storage.save()
+    return json.dumps({}, indent=2), 200
+
+
+# Bind function view to route /api/v1/<state_id> by using POST method
+@app_views.route('/states', methods=['POST'], strict_slashes=False)
+def post_state():
+    data = request.get_json()
+    if not data:
+        abort(400, description='Not a JSON')
+    elif 'name' not in data:
+        abort(400, description='Missing name')
+    state = State(**data)
+    state.save()
+    return json.dumps(state.to_dict(), indent=2), 201
