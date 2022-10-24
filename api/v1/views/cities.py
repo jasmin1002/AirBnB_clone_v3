@@ -102,3 +102,29 @@ def create_city(state_id):
     )
     response.mimetype = 'application/json'
     return response
+
+
+@app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
+def update_city(city_id):
+    city = storage.get(City, city_id)
+    if city is None:
+        abort(404)
+
+    data = {}
+    try:
+        data = request.get_json()
+    except Exception:
+        pass
+    if type(data).__name__ != 'dict' or len(data) == 0:
+        return make_response({'error': 'Not a JSON'}, 400)
+    skips = ['id', 'state_id', 'created_at', 'updated_at']
+    for (key, value) in data.items():
+        if key not in skips:
+            setattr(city, key, value)
+    storage.save()
+    response = make_response(
+        json.dumps(city.to_dict(), indent=2),
+        200
+    )
+    response.mimetype = 'application/json'
+    return response
