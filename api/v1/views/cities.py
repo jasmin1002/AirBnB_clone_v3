@@ -5,7 +5,7 @@ to cities route.
 '''
 
 from api.v1.views import app_views
-from flask import abort, make_response, json
+from flask import abort, make_response, json, jsonify, request
 from models import storage
 from models.city import City
 from models.state import State
@@ -57,5 +57,48 @@ def fetch_city(city_id):
     response = json.dumps(city.to_dict(), indent=2)
     # convert string to Response type
     response = make_response(response)
+    response.mimetype = 'application/json'
+    return response
+
+
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
+def delete_city(city_id):
+    city = storage.get(City, city_id)
+    if city is None:
+        abort(404)
+    city.delete()
+    storage.save()
+    return jsonify({}), 201
+
+
+@app_views.route(
+    '/states/<state_id>/cities',
+    methods=['POST'],
+    strict_slashes=False
+)
+def create_city(state_id):
+    state = storage.get(State, state_id)
+    if state is None:
+        abort(404)
+    data = ''
+    try:
+        data = request.get_json()
+    except Exception:
+        pass
+    if type(data).__name__ != 'dict':
+        return make_response({'error': 'Not a JSON'}, 400)
+    elif type(data).__name__ == 'dict' and len(data) == 0:
+        return make_response({'error': 'Missing name'}, 400)
+    elif type(data).__name__ == 'dict' and 'name' not in data:
+        return make_response({'error': 'Missing name'}, 400)
+    elif type(data).__name__ == 'dict' and data['name'] == '':
+        return make_response({'error': 'Missing name'}, 400)
+    city = City(**data)
+    city.state_id = state_id
+    city.save()
+    response = make_response(
+        json.dumps(city.to_dict(), indent=2),
+        201
+    )
     response.mimetype = 'application/json'
     return response
