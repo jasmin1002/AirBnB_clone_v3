@@ -83,11 +83,11 @@ def create_user():
         pass
     # Check for structure and attribute of input json data
     if not data:
-        abort(400, description='Not a JSON')
+        return make_response('Not a JSON', 400)
     if 'email' not in data:
-        abort(400, description='Missing email')
+        return make_response('Missing email', 400)
     if 'password' not in data:
-        abort(400, description='Missing password')
+        return make_response('Missing password', 400)
     #: user (User obj): Stores reference to newly created
     # User obj
     user = User(**data)
