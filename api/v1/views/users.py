@@ -76,9 +76,13 @@ def create_user():
         on success and 400 error code on failure.
     '''
     #: data (dict): Stores parsed json argument
-    data = request.get_json(silent=True)
+    data = {}
+    try:
+        data = request.get_json()
+    except Exception:
+        pass
     # Check for structure and attribute of input json data
-    if data is None:
+    if not data:
         abort(400, description='Not a JSON')
     if 'email' not in data:
         abort(400, description='Missing email')
@@ -110,8 +114,12 @@ def update_user(user_id):
     if user is None:
         abort(404)
     #: data(dict): Store reference of parsed json data
-    data = request.get_json(silent=True)
-    if data is None:
+    data = {}
+    try:
+        data = request.get_json()
+    except Exception:
+        pass
+    if not data:
         abort(400, description='Not a JSON')
     #: skips (list of str): Keeps list of ignored keys
     skips = ['id', 'email', 'created_at', 'updated_at']
