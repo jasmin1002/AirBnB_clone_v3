@@ -86,7 +86,7 @@ class DBStorage:
                 if accept:
                     return self.__session.get(accept, id)
                 return accept
-            except:
+            except Exception:
                 pass
 
     def count(self, *args):
@@ -96,10 +96,14 @@ class DBStorage:
             try:
                 key = '{}'.format(cls.__name__)
                 accept = classes.get(key, None)
-                all = self.all(accept)
-                return len(all)
+                if accept:
+                    all = self.all(accept)
+                    return len(all)
+                else:
+                    return len(self.all())
             except Exception:
-                error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
-                print(error)
-        else:
-            return len(self.all())
+                # error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
+                # print(error)
+                pass
+        # else:
+        # return len(self.all())
