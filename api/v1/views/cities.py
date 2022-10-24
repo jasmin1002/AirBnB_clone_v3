@@ -68,7 +68,7 @@ def delete_city(city_id):
         abort(404)
     city.delete()
     storage.save()
-    return jsonify({}), 201
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route(
