@@ -35,7 +35,7 @@ def get_amenities(**amenity_id):
         data = [amenity.to_dict() for amenity in amenities]
         return jsonify(data)
     else:
-        amenity = storage.get(Amenity, amenity_id)
+        amenity = storage.get(Amenity, amenity_id['amenity_id'])
         if amenity is None:
             abort(404)
         return jsonify(amenity.to_dict())
@@ -52,7 +52,7 @@ def delete_amenity(amenity_id):
         abort(404)
     amenity.delete()
     storage.save()
-    return make_response(jsonify({}), 200)
+    return jsonify({})
 
 
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
@@ -76,7 +76,8 @@ def create_amenity():
         # return make_response({'error': 'Missing name'}, 400)
     amenity = Amenity(**data)
     amenity.save()
-    return make_response(jsonify(amenity.to_dict()), 201)
+    # return make_response(jsonify(amenity.to_dict()), 201)
+    return jsonify(amenity.to_dict()), 201
 
 
 @app_views.route(
@@ -102,4 +103,4 @@ def update_amenity(amenity_id):
         if key not in skips:
             setattr(amenity, key, value)
     storage.save()
-    return make_response(jsonify(amenity.to_dict()), 200)
+    return jsonify(amenity.to_dict())
