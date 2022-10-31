@@ -80,14 +80,11 @@ class DBStorage:
             cls = args[0]
             id = args[1]
 
-            try:
-                key = '{}'.format(cls.__name__)
-                accept = classes.get(key, None)
-                if accept:
-                    return self.__session.get(accept, id)
-                return accept
-            except Exception:
-                pass
+            # key = '{}'.format(cls.__name__)
+            # accept = classes.get(key, None)
+            # if accept:
+            return self.__session.get(cls, id)
+            # return None
 
     def count(self, *args):
         if args and len(args) == 1:
