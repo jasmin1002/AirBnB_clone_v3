@@ -90,17 +90,16 @@ class DBStorage:
         if args and len(args) == 1:
             cls = args[0]
 
-            try:
-                key = '{}'.format(cls.__name__)
-                accept = classes.get(key, None)
-                if accept:
-                    all = self.all(accept)
-                    return len(all)
-                else:
-                    return len(self.all())
-            except Exception:
-                # error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
-                # print(error)
-                pass
-        # else:
-        # return len(self.all())
+            # try:
+            key = '{}'.format(cls.__name__)
+            accept = classes.get(key, None)
+            if accept:
+                all = self.all(accept)
+                return len(all)
+            # return len(self.all())
+            #except Exception:
+            # error = '{} type is not supported in Airbnb'.format(type(cls).__name__)
+            # print(error)
+            # pass
+        else:
+            return len(self.all())
