@@ -22,7 +22,7 @@ from models.amenity import Amenity
     defaults={'amenity_id': None},
     strict_slashes=False
 )
-def get_amenities(**amenity_id):
+def get_amenities(amenity_id=None):
     '''
     Retrieve all entries in amenities table
     Args:
@@ -30,12 +30,13 @@ def get_amenities(**amenity_id):
     Returns:
         Returns json list of amenities on success
     '''
-    if amenity_id['amenity_id'] is None:
+    if amenity_id is None:
         amenities = storage.all(Amenity)
-        data = [amenity.to_dict() for amenity in amenities]
+        print(amenities)
+        data = [amenity.to_dict() for amenity in amenities.values()]
         return jsonify(data)
     else:
-        amenity = storage.get(Amenity, amenity_id['amenity_id'])
+        amenity = storage.get(Amenity, amenity_id)
         if amenity is None:
             abort(404)
         return jsonify(amenity.to_dict())
