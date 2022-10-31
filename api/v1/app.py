@@ -17,6 +17,7 @@ HBNB_API_PORT = getenv('HBNB_API_PORT')
 
 #: flask: app stores instance of Flask
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 # Register application blueprint
 app.register_blueprint(app_views)
 
