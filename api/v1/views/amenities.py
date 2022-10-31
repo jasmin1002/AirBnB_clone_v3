@@ -19,7 +19,6 @@ from models.amenity import Amenity
 @app_views.route(
     '/amenities',
     methods=['GET'],
-    defaults={'amenity_id': None},
     strict_slashes=False
 )
 def get_amenities(amenity_id=None):
@@ -32,7 +31,6 @@ def get_amenities(amenity_id=None):
     '''
     if amenity_id is None:
         amenities = storage.all(Amenity)
-        print(amenities)
         data = [amenity.to_dict() for amenity in amenities.values()]
         return jsonify(data)
     else:
@@ -65,16 +63,12 @@ def create_amenity():
         pass
     if type(data).__name__ != 'dict':
         abort(400, 'Not a JSON')
-        # return make_response({'error': 'Not a JSON'}, 400)
     elif type(data).__name__ == 'dict' and len(data) == 0:
         abort(400, 'Missing name')
-        # return make_response({'error': 'Missing name'}, 400)
     elif type(data).__name__ == 'dict' and 'name' not in data:
         abort(400, 'Missing name')
-        # return make_response({'error': 'Missing name'}, 400)
     elif type(data).__name__ == 'dict' and data['name'] == '':
         abort(400, 'Missing name')
-        # return make_response({'error': 'Missing name'}, 400)
     amenity = Amenity(**data)
     amenity.save()
     # return make_response(jsonify(amenity.to_dict()), 201)
@@ -98,7 +92,6 @@ def update_amenity(amenity_id):
         pass
     if type(data).__name__ != 'dict' or len(data) == 0:
         abort(400, description='Not a JSON')
-        # return make_response({'error': 'Not a JSON'}, 400)
     skips = ['id', 'created_at', 'updated_at']
     for (key, value) in data.items():
         if key not in skips:
