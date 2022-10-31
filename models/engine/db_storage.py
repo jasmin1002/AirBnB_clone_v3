@@ -89,15 +89,8 @@ class DBStorage:
         if cls in classes.values():
             return self.__session.query(cls).get(id)
 
-    def count(self, *args):
-        if args and len(args) == 1:
-            cls = args[0]
-
-            # try:
-            key = '{}'.format(cls.__name__)
-            accept = classes.get(key, None)
-            if accept:
-                all = self.all(accept)
-                return len(all)
+    def count(self, cls=None):
+        if cls in classes.values():
+            return self.__session.query(cls).count()
         else:
             return len(self.all())
