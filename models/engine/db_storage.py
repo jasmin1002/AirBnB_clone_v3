@@ -84,7 +84,7 @@ class DBStorage:
             # accept = classes.get(key, None)
             # if accept:
             return self.__session.get(cls, id)
-            # return None
+        return None
 
     def count(self, *args):
         if args and len(args) == 1:
