@@ -76,6 +76,16 @@ class DBStorage:
         self.__session.remove()
 
     def get(self, cls, id):
+        """
+        Retrieve an instance of a given class support by Airbnb
+        data types
+
+        Args:
+            cls (Airbnb class): Instance of class model to retrieve
+            id (str): class model entry id
+        Returns:
+            returns instance of cls if exist or None if not exit
+        """
         if cls in classes.values():
             return self.__session.query(cls).get(id)
 
