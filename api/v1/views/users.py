@@ -19,10 +19,9 @@ from models.user import User
 @app_views.route(
     '/users',
     methods=['GET'],
-    defaults={'user_id': None},
     strict_slashes=False
 )
-def get_users(**user_id):
+def get_users(user_id=None):
     '''
     Retrieve either an entry or all entries in users table
     Args:
@@ -30,12 +29,12 @@ def get_users(**user_id):
     Returns:
         Returns json list of users or user obj on success
     '''
-    if user_id['user_id'] is None:
+    if user_id is None:
         users = storage.all(User)
-        data = [user.to_dict() for user in users]
+        data = [user.to_dict() for user in users.values()]
         return jsonify(data)
     else:
-        user = storage.get(User, user_id['user_id'])
+        user = storage.get(User, user_id)
         if user is None:
             abort(404)
         return jsonify(user.to_dict())
