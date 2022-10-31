@@ -76,15 +76,8 @@ class DBStorage:
         self.__session.remove()
 
     def get(self, cls, id):
-        # if args and len(args) == 2:
-        #    cls = args[0]
-        #    id = args[1]
-
-        key = '{}'.format(cls.__name__)
-        accept = classes.get(key, None)
-        # if accept:
-        return self.__session.get(accept, id)
-        # return accept
+        if cls in classes.values():
+            return self.__session.query(cls).get(id)
 
     def count(self, *args):
         if args and len(args) == 1:
