@@ -5,7 +5,7 @@ to states route.
 '''
 
 from api.v1.views import app_views
-from flask import json, abort, request, make_response
+from flask import json, jsonify, abort, request, make_response
 from models import storage
 from models.state import State
 
@@ -23,10 +23,10 @@ def fetch_states():
     '''
     collection = storage.all(State)
     states = [state.to_dict() for state in collection.values()]
-    response = json.dumps(states, indent=2)
-    response = make_response(response)
-    response.mimetype = 'application/json'
-    return response
+    # response = json.dumps(states, indent=2)
+    # response = make_response(response)
+    # response.mimetype = 'application/json'
+    return jsonify(states)
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
